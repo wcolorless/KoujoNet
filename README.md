@@ -17,6 +17,9 @@ The main functionality includes:
 Plans:
 - Add data providers to integrate into applications.
 - Optimization of the learning algorithm.
-- Addition of the k-nearest neighbor's algorithm.
 - Archiving the model.
 
+
+Completed plans:
+
+- Addition of the k-nearest neighbors algorithm.
