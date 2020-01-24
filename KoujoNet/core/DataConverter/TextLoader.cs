@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Runtime.InteropServices;
+using KoujoNet.core.Data;
 
 namespace KoujoNet
 {
@@ -63,7 +65,12 @@ namespace KoujoNet
             else return -1;
         }
 
-        public double[] GetLearnArray()
+        public List<(ColumnType Type, object data)> GetRawData()
+        {
+            return Columns.Select(column => (column.Type, column.data)).ToList();
+        }
+
+        public double[] GetLearnArray(bool withLabel = true)
         {
             List<double> array = new List<double>();
             for(int i = 0; i < Columns.Count; i++)
@@ -73,7 +80,7 @@ namespace KoujoNet
                     array.Add((double)Columns[i].data);
                 }
             }
-            array.Add((double)Columns.Find(x => x.Type.Type == ColumnRoleType.Label).data);
+            if(withLabel) array.Add((double)Columns.Find(x => x.Type.Type == ColumnRoleType.Label).data);
             return array.ToArray();
         }
 
@@ -82,18 +89,20 @@ namespace KoujoNet
     [Serializable]
     public class ColumnType
     {
+        public string Title { get; set; }
         public ColumnRoleType Type { get; private set; }
         public ColumnDataType DataType { get; private set; }
 
-        private ColumnType(ColumnRoleType Type, ColumnDataType DataType)
+        private ColumnType(ColumnRoleType Type, ColumnDataType DataType, string title = null)
         {
             this.Type = Type;
             this.DataType = DataType;
+            this.Title = title;
         }
 
-        public static ColumnType Create(ColumnRoleType Type, ColumnDataType DataType)
+        public static ColumnType Create(ColumnRoleType Type, ColumnDataType DataType, string title = null)
         {
-            return new ColumnType(Type, DataType);
+            return new ColumnType(Type, DataType, title);
         }
     }
 
@@ -108,52 +117,6 @@ namespace KoujoNet
         }
     }
 
-    [Serializable]
-    public class DataSet
-    {
-        List<DataRow> lines = new List<DataRow>();
-
-        public int Count
-        {
-            get
-            {
-                return lines.Count;
-            }
-        }
-
-        public int CountClasses() // Count Classes in DataSet
-        {
-            List<double> labels = new List<double>();
-            for(int i = 0; i < lines.Count; i++)
-            {
-                var label = lines[i].GetLabel();
-                if (label != -1)
-                {
-                    labels.Add(label);
-                }
-            }
-            labels = labels.Distinct().ToList();
-            return labels.Count;
-        }
-
-        public int CountParameters()
-        {
-            return lines[0].GetColumsQuantity();
-        }
-
-        public void Add(DataRow Row)
-        {
-            lines.Add(Row);
-        }
-
-        public double[] this[int index]
-        {
-            get
-            {
-               return  lines[index].GetLearnArray();
-            }
-        }
-    }
 
     [Serializable]
     public class TextLoader // Load dataset from text file
@@ -184,7 +147,7 @@ namespace KoujoNet
                         }
                         else if(Consist.Columns[e].DataType == ColumnDataType.String)
                         {
-
+                            data = elements[e];
                         }
                         else if (Consist.Columns[e].DataType == ColumnDataType.Int)
                         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using KoujoNet;
 using System.IO;
+using KoujoNet.core.Algorithms.KNN;
+using KoujoNet.core.Data;
 
 namespace TestApplication
 {
@@ -22,10 +25,12 @@ namespace TestApplication
     /// </summary>
     public partial class MainWindow : Window
     {
-        DataSet XORTrainDataSet;
-        DataSet IrisTrainDataSet;
-        Net XORnet;
-        Net Irisnet;
+        private DataSet XORTrainDataSet;
+        private DataSet IrisTrainDataSet;
+        private DataSet KNNTrainDataSet;
+        private Net XORnet;
+        private Net Irisnet;
+        private KNNClassifier _knnClassifier;
 
         public MainWindow()
         {
@@ -111,6 +116,41 @@ namespace TestApplication
         private void CloseApp(object sender, MouseButtonEventArgs e)
         {
             Close();
+        }
+
+        private void LoadKNN(object Sender, RoutedEventArgs E)
+        {
+            ConsistType Consist = new ConsistType();
+            Consist.Add(ColumnType.Create(ColumnRoleType.Label, ColumnDataType.String, "Label"));
+            Consist.Add(ColumnType.Create(ColumnRoleType.Data, ColumnDataType.Double, "Square"));
+            Consist.Add(ColumnType.Create(ColumnRoleType.Data, ColumnDataType.Double, "Storeys"));
+            Consist.Add(ColumnType.Create(ColumnRoleType.Data, ColumnDataType.Double, "Cost"));
+            KNNTrainDataSet = TextLoader.LoadFromCSV(Directory.GetCurrentDirectory() + "//Datasets//KNNHouse.txt", Consist);
+        }
+
+        private void SettingKNN(object Sender, RoutedEventArgs E)
+        {
+            _knnClassifier = new KNNClassifier(KNNTrainDataSet);
+            _knnClassifier.Init();
+        }
+
+        private void PredictKNN(object Sender, RoutedEventArgs E)
+        {
+            var elapsedTimer = new Stopwatch();
+            var newRow = new DataRow();
+            var square = Convert.ToDouble(KNNSquare.Text);
+            var storeys = Convert.ToDouble(KNNStoreys.Text);
+            var cost = Convert.ToDouble(KNNCost.Text);
+            newRow.Add(ColumnType.Create(ColumnRoleType.Label, ColumnDataType.String), "Find");
+            newRow.Add(ColumnType.Create(ColumnRoleType.Data, ColumnDataType.Double, "Square"), square);
+            newRow.Add(ColumnType.Create(ColumnRoleType.Data, ColumnDataType.Double, "Storeys"), storeys);
+            newRow.Add(ColumnType.Create(ColumnRoleType.Data,ColumnDataType.Double, "Cost"), cost);
+            elapsedTimer.Reset();
+            elapsedTimer.Start();
+            var result = _knnClassifier.Classification(newRow);
+            elapsedTimer.Stop();
+            KNNTimeElapsed.Text = elapsedTimer.ElapsedTicks.ToString() + "; ticks (1 tick = 100 nano)";
+            KNNResult.Text = result;
         }
     }
 }

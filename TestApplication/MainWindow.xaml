@@ -36,6 +36,7 @@
                         <TextBlock TextWrapping="Wrap" Text="Input 2:" Margin="10,273,718,57"/>
                         <TextBlock TextWrapping="Wrap" Text="Result:" Margin="10,320,718,10"/>
                         <TextBlock x:Name="XORRESULT" TextWrapping="Wrap" Text="N/A" Margin="81,320,683,10"/>
+
                     </Grid>
                 </TabItem>
                 <TabItem Header="Iris">
@@ -65,9 +66,25 @@
                         <ComboBox x:Name="ComplexityIris" Margin="10,172,610,155"/>
                     </Grid>
                 </TabItem>
+                <TabItem Header="k-nearest neighbors">
+                    <Grid>
+                        <TextBlock TextWrapping="Wrap" Text="In this test use House dataset for house classification (k-nearest neighbors)" Margin="10,11,175,319"/>
+                        <Button Content="1. LOAD DATASET" Margin="18,66,602,238" Background="#FF71C2DA" Click="LoadKNN"/>
+                        <Button Content="2. SETTING" Background="#FF8D5DE2" Click="SettingKNN" Height="43" Width="172" Margin="18,120,602,184"/>
+                        <Button Content="3. PREDICT" Background="#FFDAE05B" Click="PredictKNN" Height="43" Width="172" Margin="18,178,602,126"/>
+                        <TextBlock TextWrapping="Wrap" Text="Square:" Margin="238,45,475,277" FontSize="18"/>
+                        <TextBox x:Name="KNNSquare" Height="23" TextWrapping="Wrap" Text="0" Margin="238,65,354,259"/>
+                        <TextBlock TextWrapping="Wrap" Text="Storeys:" Margin="238,105,475,217" FontSize="18"/>
+                        <TextBox x:Name="KNNStoreys" Height="23" TextWrapping="Wrap" Text="0" Margin="238,125,354,199"/>
+                        <TextBlock TextWrapping="Wrap" Text="Cost:" Margin="238,167,475,155" FontSize="18"/>
+                        <TextBox x:Name="KNNCost" Height="23" TextWrapping="Wrap" Text="0" Margin="238,187,354,137"/>
+                        <TextBlock TextWrapping="Wrap" Text="Result: " FontSize="18" Height="25" Width="79" Margin="18,305,696,17"/>
+                        <TextBlock x:Name="KNNResult" TextWrapping="Wrap" Text="0" FontSize="18" Height="25" Margin="102,305,475,17"/>
+                        <TextBlock TextWrapping="Wrap" Text="TimeElapsed: " FontSize="18" Height="25" Margin="18,265,653,57"/>
+                        <TextBlock x:Name="KNNTimeElapsed" TextWrapping="Wrap" Text="0" FontSize="18" Height="25" Margin="141,265,255,57"/>
+                    </Grid>
 
-
-
+                </TabItem>
 
 
 
